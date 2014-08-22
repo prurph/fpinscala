@@ -45,3 +45,18 @@ List.hasSubsequence(List(1,2,3), List(2))
 List.hasSubsequence(List(1,2,3), List(1,2,3,4))
 List.hasSubsequence(List(1,2,3), List(1,3,2))
 List.hasSubsequence(List(1,2,3,1,2,3,5,1,2,3,4,1,2), List(1,2,3,4))
+
+// Tree Exercises
+val tree = new Branch(Branch(Leaf(1), Leaf(2)), Branch(Leaf(5), Leaf(1)))
+Tree.maximum(tree)
+
+def branchlet[A](v1: A, v2: A) = new Branch[A](Leaf(v1), Leaf(v2))
+val tree2 = new Branch(branchlet(1,1), Branch(branchlet(2,2), branchlet(5,10)))
+Tree.maximum(tree2)
+Tree.depth(tree2)
+
+Tree.map(tree)(_*2)
+
+Tree.size(tree)
+Tree.sizeAsFold(tree)
+Tree.depthAsFold(tree2)
