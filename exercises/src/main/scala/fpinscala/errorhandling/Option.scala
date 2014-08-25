@@ -23,10 +23,14 @@ sealed trait Option[+A] {
 
   def orElse[B>:A](ob: => Option[B]): Option[B] =
     // if this exists, use Some(_) to get the value a in Some(a) and then map it to Some(a)
+    // this is effectively (x => Some(x))
     // otherwise return option b
     this map(Some(_)) getOrElse ob
 
-  def filter(f: A => Boolean): Option[A] = sys.error("todo")
+  def filter(f: A => Boolean): Option[A] =
+    // this is a function that returns Some(a) if the predicate is true, otherwise it filters it out and returns None
+    // flatMap just calls this on a for Some(a)
+    flatMap(a => if (f(a)) Some(a) else None))
 }
 case class Some[+A](get: A) extends Option[A]
 case object None extends Option[Nothing]
