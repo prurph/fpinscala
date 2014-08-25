@@ -21,7 +21,10 @@ sealed trait Option[+A] {
     case Some(a) => f(a)
   }
 
-  def orElse[B>:A](ob: => Option[B]): Option[B] = sys.error("todo")
+  def orElse[B>:A](ob: => Option[B]): Option[B] =
+    // if this exists, use Some(_) to get the value a in Some(a) and then map it to Some(a)
+    // otherwise return option b
+    this map(Some(_)) getOrElse ob
 
   def filter(f: A => Boolean): Option[A] = sys.error("todo")
 }
