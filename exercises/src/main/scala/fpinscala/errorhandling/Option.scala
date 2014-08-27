@@ -30,7 +30,8 @@ sealed trait Option[+A] {
   def filter(f: A => Boolean): Option[A] =
     // this is a function that returns Some(a) if the predicate is true, otherwise it filters it out and returns None
     // flatMap just calls this on a for Some(a)
-    flatMap(a => if (f(a)) Some(a) else None))
+    flatMap(a => if (f(a)) Some(a) else None)
+
 }
 case class Some[+A](get: A) extends Option[A]
 case object None extends Option[Nothing]
@@ -56,7 +57,9 @@ object Option {
   def mean(xs: Seq[Double]): Option[Double] =
     if (xs.isEmpty) None
     else Some(xs.sum / xs.length)
-  def variance(xs: Seq[Double]): Option[Double] = sys.error("todo")
+
+  def variance(xs: Seq[Double]): Option[Double] =
+    mean(xs).flatMap(m => mean(xs.map(x => math.pow(x - m,2))))
 
   def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = sys.error("todo")
 
