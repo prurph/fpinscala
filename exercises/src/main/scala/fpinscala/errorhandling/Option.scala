@@ -72,6 +72,16 @@ object Option {
       case h::t => h.flatMap(hh => sequence(t).map(hh::_))
     }
 
+  def sequence_2[A](a: List[Option[A]]): Option[List[A]] =
+    a.foldRight[Option[List[A]]](
+      Some(Nil)
+    )(
+      (x,y) => map2(x,y)(_ :: _)
+    )
+
   def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] =
     a.foldRight[Option[List[B]]](Some(Nil))((h,t) => map2(f(h),t)(_::_))
+
+  def traverse_2[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] =
+    sequence(a.map(f))
 }
