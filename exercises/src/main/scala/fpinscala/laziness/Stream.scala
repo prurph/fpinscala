@@ -17,9 +17,52 @@ trait Stream[+A] {
     case Empty => None
     case Cons(h, t) => if (f(h())) Some(h()) else t().find(f)
   }
-  def take(n: Int): Stream[A] = sys.error("todo")
 
-  def drop(n: Int): Stream[A] = sys.error("todo")
+  def toList: List[A] = this match {
+    case Cons(h, t) =>  h() :: t().toList
+//    if the Stream isn't a Cons, it's Empty, so return an Empty list
+    case _ => List()
+  }
+
+  def toListTailRec: List[A] = {
+    @annotation.tailrec
+    def go(s: Stream[A], acc: List[A]): List[A] = s match {
+      case Cons(h, t) => go(t(), h() :: acc)
+      case _ => acc
+    }
+ //  this needs to be .reverse because you have to do head :: list
+    go(this, List()).reverse
+  }
+
+
+  def take(n: Int): Stream[A] =
+    if (n > 0) this match {
+//      if n is 1 this is the last element we want, so its cons is an empty stream
+      case Cons(h, t) if n == 1 => cons(h(), Stream())
+      case Cons(h, t) => cons(h(), t().take(n-1))
+      case _ => Stream()
+    }
+    else Stream()
+
+  def drop(n: Int): Stream[A] = {
+    println(this.toList)
+    if (n > 0) this match {
+      case Cons(h, t) if n == 0 => this
+      case Cons(h, t) => t().drop(n - 1)
+      case _ => Stream()
+    }
+    else this
+  }
+
+  def drop_2(n: Int): Stream[A] = {
+    def go(s: Stream[A], n: Int): Stream[A] =
+      if (n <= 0) s
+      else s match {
+        case Cons(h, t) => go(t(), n - 1)
+        case _ => Stream()
+      }
+    go(this, n)
+  }
 
   def takeWhile(p: A => Boolean): Stream[A] = sys.error("todo")
 
