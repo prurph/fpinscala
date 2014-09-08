@@ -105,6 +105,10 @@ trait Stream[+A] {
   def map[B](f: A => B): Stream[B] =
     foldRight(Stream[B]())((a, b) => cons(f(a), b))
 
+//  I did not get the B:>A part on my own, had to look at the answers for that
+  def append[B:>A](s: => Stream[B]): Stream[B] =
+    foldRight(s)((a,b) => cons(a,b))
+
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
 }
 case object Empty extends Stream[Nothing]
