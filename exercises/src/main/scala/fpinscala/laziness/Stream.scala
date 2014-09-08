@@ -101,6 +101,10 @@ trait Stream[+A] {
 //  second argument. In that case there is no recursion
     foldRight(None: Option[A])((h, t) => Some(h))
 
+//  stream is [+A] so f must A => B
+  def map[B](f: A => B): Stream[B] =
+    foldRight(Stream[B]())((a, b) => cons(f(a), b))
+
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
 }
 case object Empty extends Stream[Nothing]

@@ -22,3 +22,5 @@ s3.takeWhile_2(_ <= 2).toList
 
 s.headOption
 s3.headOption
+
+s.map(_ * 2).toList
