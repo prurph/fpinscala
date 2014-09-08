@@ -140,5 +140,10 @@ object Stream {
     go(0, 1)
   }
 
-  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = sys.error("todo")
+//  f returns an option with a tuple that contains the next value and the next state
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] =
+    f(z) match {
+      case Some((h,s)) => cons(h, unfold(s)(f))
+      case _ => Stream()
+    }
 }
