@@ -112,6 +112,15 @@ trait Stream[+A] {
   def flatMap[B](f: A => Stream[B]): Stream[B] =
     foldRight(Stream[B]())((a,b) => f(a) append b)
 
+  def mapUnfold[B](f: A => B): Stream[B] =
+//    can just start with case when first action of function literal is matching an expression
+    unfold(this) {
+//      unfold takes a function and then matches f(this), expecting a Some((head, stream))
+      case Cons(h, t) => Some((f(h), t))
+      case _ => None
+    }
+
+
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
 }
 case object Empty extends Stream[Nothing]
