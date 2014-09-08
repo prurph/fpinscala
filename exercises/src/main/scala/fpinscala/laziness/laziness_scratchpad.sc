@@ -3,3 +3,18 @@ import fpinscala.laziness._
 val s = Stream(1,2,3)
 s.take(2).toList
 s.drop(2).toList
+s.drop_2(2).toList
+val s2 = (1 to 10).toStream
+s2.takeWhile(_ <= 5).toList
+s2.takeWhile(_ <= 8).toList
+s.toListTailRec
+s.toListAppend
+s2.exists(_ <= 10)
+
+val s3 = Stream(1,2,3,4,5)
+s3.exists(_ <= 5)
+s3.exists(_ > 5)
+s3.forAll(_ <= 5)
+s3.forAll(_ <= 4)
+s3.forAll_2(_ <= 5)
+s3.forAll_2(_ <= 4)

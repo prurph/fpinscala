@@ -12,6 +12,11 @@ trait Stream[+A] {
   def exists(p: A => Boolean): Boolean = 
     foldRight(false)((a, b) => p(a) || b) // Here `b` is the unevaluated recursive step that folds the tail of the stream. If `p(a)` returns `true`, `b` will never be evaluated and the computation terminates early.
 
+  def exists_2(p: A => Boolean): Boolean = this match {
+    case Cons(h, t) => p(h()) || t().exists(p)
+    case _ => false
+  }
+
   @annotation.tailrec
   final def find(f: A => Boolean): Option[A] = this match {
     case Empty => None
@@ -34,6 +39,13 @@ trait Stream[+A] {
     go(this, List()).reverse
   }
 
+  def toListAppend: List[A] = {
+    def go(s: Stream[A], acc: List[A]): List[A] = s match {
+      case Cons(h, t) => go(t(), acc :+ h())
+      case _ => acc
+    }
+    go(this, List())
+  }
 
   def take(n: Int): Stream[A] =
     if (n > 0) this match {
@@ -45,7 +57,6 @@ trait Stream[+A] {
     else Stream()
 
   def drop(n: Int): Stream[A] = {
-    println(this.toList)
     if (n > 0) this match {
       case Cons(h, t) if n == 0 => this
       case Cons(h, t) => t().drop(n - 1)
@@ -64,9 +75,19 @@ trait Stream[+A] {
     go(this, n)
   }
 
-  def takeWhile(p: A => Boolean): Stream[A] = sys.error("todo")
+  def takeWhile(p: A => Boolean): Stream[A] = this match {
+    case Cons(h, t) if p(h()) => cons(h(), t()takeWhile p)
+//    if the predicate isn't true, then takeWhile returns Stream()
+    case _ => Stream()
+  }
 
-  def forAll(p: A => Boolean): Boolean = sys.error("todo")
+  def forAll(p: A => Boolean): Boolean = this match {
+    case Cons(h, t) => p(h()) && t().forAll(p)
+    case _ => true
+  }
+
+  def forAll_2(p: A => Boolean): Boolean =
+    foldRight(true)((a, b) => p(a) && b)
 
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
 }
