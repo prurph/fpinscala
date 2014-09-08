@@ -81,6 +81,13 @@ trait Stream[+A] {
     case _ => Stream()
   }
 
+  def takeWhile_2(p: A => Boolean): Stream[A] =
+//  why is the [A] necessary?
+    foldRight(Stream[A]())((a, b) =>
+      if (p(a)) cons(a, b)
+      else      Stream()
+    )
+
   def forAll(p: A => Boolean): Boolean = this match {
     case Cons(h, t) => p(h()) && t().forAll(p)
     case _ => true
@@ -88,6 +95,11 @@ trait Stream[+A] {
 
   def forAll_2(p: A => Boolean): Boolean =
     foldRight(true)((a, b) => p(a) && b)
+
+  def headOption: Option[A] =
+//  because signature is foldRight[A,B](z: => B)(f: (A, => B) => B): B the function can choose not to evaluate the
+//  second argument. In that case there is no recursion
+    foldRight(None: Option[A])((h, t) => Some(h))
 
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
 }

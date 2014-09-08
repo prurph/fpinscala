@@ -18,3 +18,7 @@ s3.forAll(_ <= 5)
 s3.forAll(_ <= 4)
 s3.forAll_2(_ <= 5)
 s3.forAll_2(_ <= 4)
+s3.takeWhile_2(_ <= 2).toList
+
+s.headOption
+s3.headOption
