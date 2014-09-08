@@ -135,7 +135,7 @@ object Stream {
 
   def from(n: Int): Stream[Int] = cons(n, from(n + 1))
 
-  def fibs[A]: Stream[Int] = {
+  def fibs: Stream[Int] = {
     def go(f0: Int, f1: Int): Stream[Int] = cons(f0, go(f1, f0 + f1))
     go(0, 1)
   }
@@ -146,4 +146,14 @@ object Stream {
       case Some((h,s)) => cons(h, unfold(s)(f))
       case _ => Stream()
     }
+
+  def onesUnfold: Stream[Int] = unfold(1)(_ => Some((1,1)))
+  def constantUnfold[A](a: A): Stream[A] = unfold(a)(_ => Some((a,a)))
+  def fibsUnfold: Stream[Int] = unfold((0,1))(s =>
+    s match {
+//        think of this as making f0 the next term, and setting up the next state so that f1 will be the next term, then f0 + f1, etc.
+      case (f0, f1) => Some((f0, (f1, f0 + f1)))
+    }
+  )
+
 }

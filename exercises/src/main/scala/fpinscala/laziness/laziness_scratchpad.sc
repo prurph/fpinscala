@@ -29,3 +29,10 @@ val ones: Stream[Int] = Stream.cons(1, ones)
 ones.map(_ + 1).exists(_ % 2 == 0)
 ones.takeWhile(_ == 1)
 ones.forAll(_ != 1)
+
+Stream.onesUnfold.map(_ + 1).exists(_ % 2 == 0)
+val a = Stream.constantUnfold("foo").take(3)
+a.toList
+
+val fibs = Stream.fibsUnfold.take(10)
+fibs.toList
