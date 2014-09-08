@@ -24,3 +24,8 @@ s.headOption
 s3.headOption
 
 s.map(_ * 2).toList
+
+val ones: Stream[Int] = Stream.cons(1, ones)
+ones.map(_ + 1).exists(_ % 2 == 0)
+ones.takeWhile(_ == 1)
+ones.forAll(_ != 1)

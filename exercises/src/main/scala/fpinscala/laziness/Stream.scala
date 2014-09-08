@@ -105,9 +105,12 @@ trait Stream[+A] {
   def map[B](f: A => B): Stream[B] =
     foldRight(Stream[B]())((a, b) => cons(f(a), b))
 
-//  I did not get the B:>A part on my own, had to look at the answers for that
-  def append[B:>A](s: => Stream[B]): Stream[B] =
+//  I did not get the B>:A part on my own; had to look at the answers for that
+  def append[B>:A](s: => Stream[B]): Stream[B] =
     foldRight(s)((a,b) => cons(a,b))
+
+  def flatMap[B](f: A => Stream[B]): Stream[B] =
+    foldRight(Stream[B]())((a,b) => f(a) append b)
 
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
 }
@@ -128,7 +131,14 @@ object Stream {
     else cons(as.head, apply(as.tail: _*))
 
   val ones: Stream[Int] = Stream.cons(1, ones)
-  def from(n: Int): Stream[Int] = sys.error("todo")
+  def constant[A](a: A): Stream[A] = cons(a, constant(a))
+
+  def from(n: Int): Stream[Int] = cons(n, from(n + 1))
+
+  def fibs[A]: Stream[Int] = {
+    def go(f0: Int, f1: Int): Stream[Int] = cons(f0, go(f1, f0 + f1))
+    go(0, 1)
+  }
 
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = sys.error("todo")
 }
