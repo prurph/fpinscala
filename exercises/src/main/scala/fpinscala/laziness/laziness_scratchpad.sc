@@ -36,3 +36,6 @@ a.toList
 
 val fibs = Stream.fibsUnfold.take(10)
 fibs.toList
+
+s.mapUnfold(_ * 2).toList
+s.takeUnfold(2).toList

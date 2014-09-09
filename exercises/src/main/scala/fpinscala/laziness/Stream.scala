@@ -116,10 +116,18 @@ trait Stream[+A] {
 //    can just start with case when first action of function literal is matching an expression
     unfold(this) {
 //      unfold takes a function and then matches f(this), expecting a Some((head, stream))
-      case Cons(h, t) => Some((f(h), t))
+      case Cons(h, t) => Some((f(h()), t()))
       case _ => None
     }
 
+  def takeUnfold(n: Int): Stream[A] =
+    unfold((this,n)) {
+//      again because unfold will map Some((h,t)) h to the next term, when n is 1 we map that next term to be h() and
+//      the term after to be empty so that the recursion ends, making h() the last term
+      case (Cons(h, t), n) if n == 1 => Some((h(), (empty, n - 1)))
+      case (Cons(h, t), n) if n > 0  => Some((h(), (t(), n - 1)))
+      case _ => None
+    }
 
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
 }
