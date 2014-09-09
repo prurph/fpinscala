@@ -131,9 +131,18 @@ trait Stream[+A] {
 
   def takeWhileUnfold(p: A => Boolean): Stream[A] =
     unfold(this) {
-      case (Cons(h, t)) if p(h())  => Some((h(), t()))
+      case Cons(h, t) if p(h())  => Some((h(), t()))
       case _ => None
     }
+
+  def zipWithUnfold[B,C](s2: Stream[B])(f: (A,B) => C): Stream[C] =
+    unfold((this, s2)) {
+      case (Cons(h1,t1), Cons(h2,t2)) => Some((f(h1(),h2()), (t1(),t2())))
+//      when one of the streams is out of elements, stop zipping
+      case _ => None
+    }
+
+// zipAll is super hard
 
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
 }
