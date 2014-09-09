@@ -129,6 +129,12 @@ trait Stream[+A] {
       case _ => None
     }
 
+  def takeWhileUnfold(p: A => Boolean): Stream[A] =
+    unfold(this) {
+      case (Cons(h, t)) if p(h())  => Some((h(), t()))
+      case _ => None
+    }
+
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
 }
 case object Empty extends Stream[Nothing]

@@ -39,3 +39,4 @@ fibs.toList
 
 s.mapUnfold(_ * 2).toList
 s.takeUnfold(2).toList
+s3.takeWhileUnfold(_ <= 4).toList
