@@ -42,3 +42,4 @@ s.takeUnfold(2).toList
 s3.takeWhileUnfold(_ <= 4).toList
 
 s3.zipWithUnfold(s)(_ + _).toList
+s.tails.toList

@@ -142,9 +142,19 @@ trait Stream[+A] {
       case _ => None
     }
 
-// zipAll is super hard
-
+//zipAll is super hard
+//so is startsWith (because it needs zipAll)
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
+
+  def tails: Stream[Stream[A]] =
+    unfold(this) {
+      case Empty => None
+//    unfold this, if it's a stream, return an option containing a tuple of the current term (the stream itself, and the
+//    next (the stream minus the first element)
+      case s => Some((s, s drop 1))
+//    why do you have to append an empty stream? Shouldn't you eventually have cons(Empty, unfold(Empty)(f) which then
+//    means f(Empty) matches case _ => Stream() and you end up with an empty stream as the last element?
+    } append Stream()
 }
 case object Empty extends Stream[Nothing]
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A]
@@ -181,11 +191,9 @@ object Stream {
 
   def onesUnfold: Stream[Int] = unfold(1)(_ => Some((1,1)))
   def constantUnfold[A](a: A): Stream[A] = unfold(a)(_ => Some((a,a)))
-  def fibsUnfold: Stream[Int] = unfold((0,1))(s =>
-    s match {
+  def fibsUnfold: Stream[Int] = unfold((0,1)) {
 //        think of this as making f0 the next term, and setting up the next state so that f1 will be the next term, then f0 + f1, etc.
       case (f0, f1) => Some((f0, (f1, f0 + f1)))
-    }
-  )
+  }
 
 }
