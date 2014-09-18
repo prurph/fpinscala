@@ -11,3 +11,4 @@ RNG.map2(RNG.int, RNG.int)((a,b) => a*b)(RNG.Simple(4))
 
 val s = State(RNG.int)
 val s2 = s.map2(s)((a,b) => a*b).run(RNG.Simple(4))
+s.get
